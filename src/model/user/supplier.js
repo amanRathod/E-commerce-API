@@ -2,11 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const supplierSchema = new Schema({
-  StoreName: {
-    type: String,
-    required: true,
-  },
-  address: {
+  storeName: {
     type: String,
     required: true,
   },
@@ -14,16 +10,21 @@ const supplierSchema = new Schema({
     type: String,
     required: true,
   },
+  password: {
+    type: String,
+    required: true,
+  },
+  address: {
+    type: String,
+  },
   description: {
     type: String,
   },
   payment: {
     type: String,
-    required: true,
   },
   productCategory: [{
     type: String,
-    required: true,
   }],
   products: [{
     type: Schema.Types.ObjectId,

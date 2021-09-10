@@ -2,7 +2,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
-const User = require('../../../model/user/consumer');
+const User = require('../../../../model/user/consumer');
 
 exports.login = async(req, res, next) => {
   try {
@@ -48,17 +48,22 @@ exports.register = async(req, res, next) => {
         message: error.array()[0].msg,
       });
     }
-    const { email, password, firstName, lastName, role } = req.body;
+    const { name, email, password } = req.body;
 
+    const user = await User.findOne({ email });
+    if (user) {
+      return res.status(422).json({
+        success: false,
+        message: 'Consumer already exists',
+      });
+    }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
     await User.create({
       email,
       password: hashedPassword,
-      firstName,
-      lastName,
-      role,
+      name,
     });
 
     return res.status(200).json({
