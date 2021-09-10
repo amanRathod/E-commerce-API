@@ -14,7 +14,7 @@ router.post('/register', [
   body('password').not().isEmpty().withMessage('Password is required'),
   body('firstName').not().isEmpty().withMessage('First name is required'),
   body('lastName').not().isEmpty().withMessage('Last name is required'),
-  body('phone').not().isEmpty().withMessage('Phone is required'),
+  body('role').not().isEmpty().withMessage('Role is required'),
 ], userController.register);
 
 module.exports = router;

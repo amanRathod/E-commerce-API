@@ -2,11 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
-  firstName: {
-    type: String,
-    required: true,
-  },
-  lastName: {
+  Name: {
     type: String,
     required: true,
   },
@@ -18,18 +14,40 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
-  role: {
+  cart: {
+    type: Array,
+    default: [],
+  },
+  orders: {
+    type: Array,
+    default: [],
+  },
+  phone: {
     type: String,
     required: true,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
+  address: {
+    type: String,
+    required: true,
   },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
+  city: {
+    type: String,
+    required: true,
   },
+  state: {
+    type: String,
+    required: true,
+  },
+  zip: {
+    type: String,
+    required: true,
+  },
+  country: {
+    type: String,
+    required: true,
+  },
+}, {
+  timestamps: true,
 });
 
 const User = mongoose.model('User', UserSchema);

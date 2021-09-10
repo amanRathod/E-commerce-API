@@ -1,21 +1,20 @@
-const express = require('express');
-const router = express.Router();
-const User = require('../model/user');
+const jwt = require('jsonwebtoken');
+const User = require('../model/user/consumer');
 
-router.get('/', async(req, res, next) => {
+const authenticateToken = async(req, res, next) => {
   try {
+    console.log('authenticateToken');
     const bearerToken = req.headers.authorization.split(' ')[1];
-    const user = await User.findOne({
-      where: {
-        bearerToken,
-      },
-    });
-    if (!user) {
-      res.status(403).send('Invalid user');
-    }
+    if (bearerToken === null) res.sendStatus(401);
+    const decoded = jwt.verify(bearerToken, process.env.JWT_SECRET_KEY);
+    const user = await User.findById(decoded.id);
+    if (!user) res.sendStatus(401);
     req.user = user;
     next();
   } catch (error) {
     next(error);
   }
-});
+};
+module.exports = authenticateToken;
+
+

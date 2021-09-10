@@ -2,7 +2,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
-const User = require('../../../model/user');
+const User = require('../../../model/user/consumer');
 
 exports.login = async(req, res, next) => {
   try {
@@ -48,7 +48,7 @@ exports.register = async(req, res, next) => {
         message: error.array()[0].msg,
       });
     }
-    const { email, password, firstName, lastName, phoneNo, role } = req.body;
+    const { email, password, firstName, lastName, role } = req.body;
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -58,7 +58,6 @@ exports.register = async(req, res, next) => {
       password: hashedPassword,
       firstName,
       lastName,
-      phoneNo,
       role,
     });
 
