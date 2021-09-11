@@ -2,6 +2,8 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Supplier = require('../../../../model/user/supplier');
+const Address = require('../../../../model/user/address');
+const Bank = require('../../../../model/user/bank');
 const { validationResult } = require('express-validator');
 
 exports.login = async(req, res, next) => {
@@ -26,12 +28,13 @@ exports.login = async(req, res, next) => {
         message: 'Invalid credentials',
       });
     }
-    const token = jwt.sign({supplierId: supplier._id, phone: phone}, process.env.JWT_SECRET_KEY, {
+    const token = jwt.sign({id: supplier._id, phone: phone}, process.env.JWT_SECRET_KEY, {
       expiresIn: '1h',
     });
     return res.status(200).json({
       message: 'Login successful',
       token,
+      supplierId: supplier.id,
     });
   } catch (err) {
     next(err);
@@ -71,3 +74,57 @@ exports.register = async(req, res, next) => {
     next(err);
   }
 };
+
+exports.updatePersonalData = async(req, res, next) => {
+  try {
+    const supplierId = req.params.supplierId;
+    const supplier = await Supplier.findByIdAndUpdate({_id: supplierId}, req.body);
+    if (!supplier){
+      return res.status(404).json({
+        message: 'Supplier not found',
+      });
+    }
+    return res.status(200).json({
+      message: 'Supplier personal-data updated successfully',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.updateAddressData = async(req, res, next) => {
+  try {
+    const supplierId = req.params.supplierId;
+    const supplier = await Address.findOneAndUpdate({user: supplierId}, req.body);
+    if (!supplier){
+      await Address.create({
+        user: supplierId,
+        ...req.body,
+      });
+    }
+    return res.status(200).json({
+      message: 'Supplier address updated successfully',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+exports.updateBankData = async(req, res, next) => {
+  try {
+    const supplierId = req.params.supplierId;
+    const supplier = await Bank.findOneAndUpdate({user: supplierId}, req.body);
+    if (!supplier){
+      await Bank.create({
+        user: supplierId,
+        ...req.body,
+      });
+    }
+    return res.status(200).json({
+      message: 'Supplier bank details updated successfully',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+exports.updatePassword = async(req, res, next) => {};
+

@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const User = require('../../../../model/user/consumer');
+const Address = require('../../../../model/user/address');
+const Bank = require('../../../../model/user/bank');
 
 exports.login = async(req, res, next) => {
   try {
@@ -33,6 +35,7 @@ exports.login = async(req, res, next) => {
       success: true,
       message: 'Login Successfully',
       token,
+      userId: user.id,
     });
   } catch (error) {
     console.log(error);
@@ -78,3 +81,55 @@ exports.register = async(req, res, next) => {
     });
   };
 };
+
+exports.updatePersonalData = async(req, res, next) => {
+  try {
+    const consumerId = req.params.consumerId;
+    const consumer = await User.findByIdAndUpdate({_id: consumerId}, req.body);
+    if (!consumer){
+      return res.status(404).json({
+        message: 'consumer not found',
+      });
+    }
+    return res.status(200).json({
+      message: 'consumer personal-data updated successfully',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+exports.updateAddressData = async(req, res, next) => {
+  try {
+    const consumerId = req.params.consumerId;
+    const consumer = await Address.findOneAndUpdate({user: consumerId}, req.body);
+    if (!consumer){
+      await Address.create({
+        user: consumerId,
+        ...req.body,
+      });
+    }
+    return res.status(200).json({
+      message: 'Consumer address updated successfully',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+exports.updateBankData = async(req, res, next) => {
+  try {
+    const consumerId = req.params.consumerId;
+    const consumer = await Bank.findOneAndUpdate({user: consumerId}, req.body);
+    if (!consumer){
+      await Bank.create({
+        user: consumerId,
+        ...req.body,
+      });
+    }
+    return res.status(200).json({
+      message: 'Consumer bank details updated successfully',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+exports.updatePassword = async(req, res, next) => {};

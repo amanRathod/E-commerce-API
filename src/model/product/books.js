@@ -3,10 +3,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const bookSchema = new Schema({
-  price: {
-    type: Number,
-    required: true,
-  },
   page: {
     type: Number,
   },
@@ -28,7 +24,7 @@ const bookSchema = new Schema({
   },
   language: {
     type: String,
-    enum: ['english', 'french', 'spanish', 'german', 'italian', 'other'],
+    enum: ['english', 'hindi', 'sanskrit', 'french', 'spanish', 'german', 'italian', 'other'],
     required: true,
   },
   publisher: {

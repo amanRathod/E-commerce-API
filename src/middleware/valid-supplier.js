@@ -1,12 +1,12 @@
 const jwt = require('jsonwebtoken');
-const User = require('../model/user/consumer');
+const Supplier = require('../model/user/supplier');
 
 const authenticateToken = async(req, res, next) => {
   try {
     const bearerToken = req.headers.authorization.split(' ')[1];
     if (bearerToken === null) res.sendStatus(401);
     const decoded = jwt.verify(bearerToken, process.env.JWT_SECRET_KEY);
-    const user = await User.findById(decoded.id);
+    const user = await Supplier.findById(decoded.id);
     if (!user) res.sendStatus(401);
     req.user = user;
     next();
@@ -15,5 +15,4 @@ const authenticateToken = async(req, res, next) => {
   }
 };
 module.exports = authenticateToken;
-
 

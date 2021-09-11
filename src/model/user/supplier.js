@@ -14,15 +14,6 @@ const supplierSchema = new Schema({
     type: String,
     required: true,
   },
-  address: {
-    type: String,
-  },
-  description: {
-    type: String,
-  },
-  payment: {
-    type: String,
-  },
   productCategory: [{
     type: String,
   }],
@@ -30,11 +21,17 @@ const supplierSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Product',
   }],
+  description: {
+    type: String,
+  },
+  website: {
+    type: String,
+  },
   panNumber: {
     type: String,
     required: true,
   },
-  website: {
+  gstNumber: {
     type: String,
   },
 }, {

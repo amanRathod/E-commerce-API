@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+// const Book = require('../../model/product/books');
 
 const productSchema = new Schema({
   name: {
@@ -8,13 +9,18 @@ const productSchema = new Schema({
   },
   image: {
     type: String,
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: true,
   },
   description: {
     type: String,
   },
-  category: {
+  type: {
     type: String,
-    enum: ['Shirt', 'Pants', 'Shoes', 'Accessories', 'books', 'Smart Phone'],
+    enum: ['Shirt', 'Pants', 'Shoes', 'Accessories', 'Book', 'SmartPhone'],
     required: true,
   },
   reviews: [{
@@ -30,7 +36,7 @@ const productSchema = new Schema({
   },
   product: [{
     type: Schema.Types.ObjectId,
-    ref: 'Product',
+    ref: 'Book',
   }],
 }, {
   timestamps: true,
