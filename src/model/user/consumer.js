@@ -18,6 +18,10 @@ const UserSchema = new Schema({
     type: Array,
     default: [],
   },
+  role: {
+    type: String,
+    default: 'consumer',
+  },
   orders: {
     type: Array,
     default: [],

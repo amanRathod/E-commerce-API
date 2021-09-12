@@ -24,6 +24,10 @@ const supplierSchema = new Schema({
   description: {
     type: String,
   },
+  role: {
+    type: String,
+    default: 'supplier',
+  },
   website: {
     type: String,
   },

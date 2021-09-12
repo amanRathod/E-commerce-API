@@ -25,6 +25,7 @@ exports.createProduct = async(req, res, next) => {
     return res.status(200).json({
       success: true,
       message: 'Product created successfully',
+      book,
     });
 
   } catch (err) {
