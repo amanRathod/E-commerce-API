@@ -1,16 +1,23 @@
-/* eslint-disable handle-callback-err */
-/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
-const mongoose = require('mongoose');
 const { validationResult } = require('express-validator');
+const multer = require('multer');
+const path = require('path');
 const Product = require('../../../../model/product/product');
 const Book = require('../../../../model/product/books');
-const SmartPhone = require('../../../../model/product/smartPhone');
 
+
+// multer config for image upload
+const storage = multer.diskStorage({
+  destination: './public/productImage/',
+  filename: function(req, file, cb){
+    cb(null, 'IMAGE-' + Date.now() + path.extname(file.originalname));
+  },
+});
+
+const productImage = multer({ storage: storage, limits: {fileSize: 100000 }}); // limit 10MB
 
 exports.createProduct = async(req, res, next) => {
   try {
-
     const error = validationResult(req);
     if (!error) {
       return res.status(422).json({
@@ -19,8 +26,11 @@ exports.createProduct = async(req, res, next) => {
       });
     }
 
+    productImage.single('file');
+
     const book = await Book.create({...req.body});
-    const products = await Product.create({product: book._id, ...req.body });
+    const photoURL = req.protocol + '://' + req.get('host') + '/' + req.file.path;
+    await Product.create({product: book._id, supplier: req.user.email, image: photoURL, ...req.body });
 
     return res.status(200).json({
       success: true,

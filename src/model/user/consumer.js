@@ -29,6 +29,12 @@ const UserSchema = new Schema({
   phone: {
     type: String,
   },
+  passwordResetToken: {
+    type: String,
+  },
+  passwordResetExpires: {
+    type: Date,
+  },
 }, {
   timestamps: true,
 });

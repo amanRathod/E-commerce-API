@@ -8,9 +8,17 @@ exports.createOrder = async(req, res, next) => {
   try {
     const error = validatorResult(req);
     if (!error) {
-      res.status(422).json({
+      return res.status(422).json({
         success: false,
         message: error.array()[0].msg,
+      });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user.isVarified) {
+      return res.status(422).json({
+        success: false,
+        message: 'You are not verified',
       });
     }
 

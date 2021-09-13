@@ -38,6 +38,10 @@ const supplierSchema = new Schema({
   gstNumber: {
     type: String,
   },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
 }, {
   timestamps: true,
 });

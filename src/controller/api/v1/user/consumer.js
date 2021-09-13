@@ -98,6 +98,7 @@ exports.updatePersonalData = async(req, res, next) => {
     next(err);
   }
 };
+
 exports.updateAddressData = async(req, res, next) => {
   try {
     const consumerId = req.params.consumerId;
@@ -115,6 +116,7 @@ exports.updateAddressData = async(req, res, next) => {
     next(err);
   }
 };
+
 exports.updateBankData = async(req, res, next) => {
   try {
     const consumerId = req.params.consumerId;
@@ -132,4 +134,3 @@ exports.updateBankData = async(req, res, next) => {
     next(err);
   }
 };
-exports.updatePassword = async(req, res, next) => {};

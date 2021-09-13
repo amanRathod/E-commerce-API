@@ -38,6 +38,10 @@ const productSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Book',
   }],
+  supplier: {
+    type: String,
+    required: true,
+  },
 }, {
   timestamps: true,
 });

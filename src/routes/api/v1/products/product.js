@@ -1,19 +1,13 @@
 /* eslint-disable max-len */
 const express = require('express');
 const router = express.Router();
-const { body } = require('express-validator');
-const authenticateToken = require('../../../../middleware/valid-supplier');
-const book = require('../../../../controller/api/v1/products/book');
+const authenticateConsumerToken = require('../../../../middleware/valid-user');
+const product = require('../../../../controller/api/v1/products/product');
 
-router.post('/book/create', [
-  body('name').not().isEmpty().withMessage('Product Name is required'),
-  body('price').not().isEmpty().withMessage('Product price is required'),
-  body('image').not().isEmpty().withMessage('Product image is required'),
-  body('category').not().isEmpty().withMessage('Product category is required'),
-  body('stock').not().isEmpty().withMessage('Product stock is required'),
-], authenticateToken, book.createProduct);
+router.use('/book', require('./book-category'));
 
-router.put('/book/update/:productId', authenticateToken, book.updateProduct);
+// add to cart
+router.use('/add-to-cart/:productId', authenticateConsumerToken, product.addToCart);
 
 module.exports = router;
 

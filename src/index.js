@@ -13,6 +13,8 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use('/public', express.static('public'));
+
 const port = process.env.PORT;
 
 app.use('/', require('./routes'));

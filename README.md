@@ -10,3 +10,5 @@
 - mongoose
 - bcryptjs
 - jsonwebtoken
+- nodemailer
+- multer

@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const Admin = require('../../../../model/user/admin');
 const Address = require('../../../../model/user/address');
 const Bank = require('../../../../model/user/bank');
+const Supplier = require('../../../../model/user/supplier');
 
 exports.login = async(req, res) => {
   try {
@@ -84,6 +85,26 @@ exports.register = async(req, res) => {
     res.status(500).json({
       message: err.message,
     });
+  }
+};
+
+exports.verifySupplier = async(req, res, next) => {
+  try {
+    const supplierId = req.params.supplierId;
+    const supplier = await Supplier.findByIdAndUpdate({_id: supplierId}, {isVerified: true});
+
+    if (!supplier) {
+      return res.status(404).json({
+        message: 'supplier not found',
+      });
+    }
+
+    return res.status(200).json({
+      message: 'supplier verified successfully',
+    });
+
+  } catch (err) {
+    next(err);
   }
 };
 
