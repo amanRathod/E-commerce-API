@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const Supplier = require('../model/user/supplier');
 
-const authenticateToken = async(req, res, next) => {
+const authenticateSupplierToken = async(req, res, next) => {
   try {
     const bearerToken = req.headers.authorization.split(' ')[1];
     if (bearerToken === null) res.sendStatus(401);
@@ -14,5 +14,5 @@ const authenticateToken = async(req, res, next) => {
     next(error);
   }
 };
-module.exports = authenticateToken;
+module.exports = authenticateSupplierToken;
 

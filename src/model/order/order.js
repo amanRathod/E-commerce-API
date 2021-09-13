@@ -5,12 +5,10 @@ const OrderSchema = new Schema({
   customer_id: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
   },
   product_id: {
     type: Schema.Types.ObjectId,
     ref: 'Product',
-    required: true,
   },
   offer: {
     type: Schema.Types.ObjectId,
@@ -18,7 +16,7 @@ const OrderSchema = new Schema({
   },
   delivery_status: {
     type: String,
-    enum: ['pending', 'accepted', 'rejected', 'canceled'],
+    enum: ['pending', 'accepted', 'rejected', 'cancelled'],
     default: 'pending',
   },
   quantity: {
