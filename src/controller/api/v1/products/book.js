@@ -26,8 +26,8 @@ exports.createProduct = async(req, res, next) => {
       });
     }
 
-    // supplier is varified by admin
-    if (!req.user.isVarified) {
+    // supplier is verified by admin
+    if (!req.user.isVerified) {
       return res.status(422).json({
         success: false,
         message: 'You are not verified',
