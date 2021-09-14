@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node babel-node src/index.js",
-    "dev:start": "clear; nodemon --exec babel-node src/index.js",
+    "start": "node src/index.js",
+    "dev:start": "nodemon src/index.js",
     "pretest": "eslint --ignore-path .gitignore ."
   },
   "author": "",
