@@ -22,5 +22,4 @@ router.put('/update/bank-data/:supplierId', authenticateSupplierToken, supplier.
 router.put('/update/address-data/:supplierId', authenticateSupplierToken, supplier.updateAddressData);
 router.put('/update/pasword', authenticateSupplierToken, supplier.updatePassword);
 
-
 module.exports = router;

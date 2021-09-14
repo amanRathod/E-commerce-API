@@ -7,7 +7,7 @@ const Address = require('../../../../model/user/address');
 const Bank = require('../../../../model/user/bank');
 const Supplier = require('../../../../model/user/supplier');
 
-exports.login = async(req, res) => {
+exports.login = async(req, res, next) => {
   try {
     const error = validationResult(req);
     if (!error.isEmpty()) {
@@ -16,6 +16,7 @@ exports.login = async(req, res) => {
       });
     }
 
+    // validate user through email
     const { email, password } = req.body;
     const user = await Admin.findOne({ email });
     if (!user) {
@@ -24,6 +25,7 @@ exports.login = async(req, res) => {
       });
     }
 
+    // validate admin password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({
@@ -31,6 +33,7 @@ exports.login = async(req, res) => {
       });
     }
 
+    // create jwt token
     const token = jwt.sign({id: user._id, email: user.email}, process.env.JWT_SECRET_KEY);
 
     return res.status(200).json({
@@ -39,7 +42,7 @@ exports.login = async(req, res) => {
     });
 
   } catch (err) {
-    res.status(500).json({
+    return res.status(500).json({
       message: err.message,
     });
   }
@@ -54,14 +57,15 @@ exports.register = async(req, res) => {
       });
     }
 
-    const { email, password, username } = req.body;
-    const user = await Admin.findOne({ email });
+    const { email, password, username, name, phone } = req.body;
+    const user = await Admin.findOne({ email }); // email must be unique
     if (user) {
       return res.status(400).json({
         message: 'User already exists',
       });
     }
 
+    // username must be unique
     const checkUsername = await Admin.findOne({ username });
     if (checkUsername) {
       return res.status(400).json({
@@ -69,13 +73,19 @@ exports.register = async(req, res) => {
       });
     }
 
+    // hash-password of admin
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    await Admin.create({
+    // create a admin user type
+    const admin = new Admin({
+      email,
+      username,
       password: hashedPassword,
-      ...req.body,
+      name,
+      phone,
     });
+    await admin.save();
 
     return res.status(201).json({
       message: 'User created',
@@ -90,8 +100,8 @@ exports.register = async(req, res) => {
 
 exports.verifySupplier = async(req, res, next) => {
   try {
-    const supplierId = req.params.supplierId;
-    const supplier = await Supplier.findByIdAndUpdate({_id: supplierId}, {isVerified: true});
+    const supplierPhone = req.body.phone;
+    const supplier = await Supplier.findOneAndUpdate({phone: supplierPhone}, {isVerified: true});
 
     if (!supplier) {
       return res.status(404).json({
@@ -112,14 +122,17 @@ exports.updatePersonalData = async(req, res, next) => {
   try {
     const adminId = req.params.adminId;
     const admin = await Admin.findByIdAndUpdate({_id: adminId}, req.body);
+
     if (!admin){
       return res.status(404).json({
         message: 'admin not found',
       });
     }
+
     return res.status(200).json({
       message: 'admin personal-data updated successfully',
     });
+
   } catch (err) {
     next(err);
   }
@@ -127,6 +140,7 @@ exports.updatePersonalData = async(req, res, next) => {
 
 exports.updateAddressData = async(req, res, next) => {
   try {
+
     const adminId = req.params.adminId;
     const admin = await Address.findOneAndUpdate({user: adminId}, req.body);
     if (!admin){
@@ -135,15 +149,18 @@ exports.updateAddressData = async(req, res, next) => {
         ...req.body,
       });
     }
+
     return res.status(200).json({
       message: 'admin address updated successfully',
     });
+
   } catch (err) {
     next(err);
   }
 };
 exports.updateBankData = async(req, res, next) => {
   try {
+
     const adminId = req.params.adminId;
     const admin = await Bank.findOneAndUpdate({user: adminId}, req.body);
     if (!admin){
@@ -152,11 +169,12 @@ exports.updateBankData = async(req, res, next) => {
         ...req.body,
       });
     }
+
     return res.status(200).json({
       message: 'admin bank details updated successfully',
     });
+
   } catch (err) {
     next(err);
   }
 };
-exports.updatePassword = async(req, res, next) => {};

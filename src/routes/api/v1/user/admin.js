@@ -21,8 +21,7 @@ router.post('/register', [
 router.put('/update/personal-data/:adminId', authenticateAdminToken, admin.updatePersonalData);
 router.put('/update/bank-data/:adminId', authenticateAdminToken, admin.updateBankData);
 router.put('/update/address-data/:adminId', authenticateAdminToken, admin.updateAddressData);
-router.put('/update/password/:token', admin.updatePassword);
 
-router.put('/veify/:supplierId', authenticateAdminToken, admin.verifySupplier);
+router.put('/verify', authenticateAdminToken, admin.verifySupplier);
 
 module.exports = router;

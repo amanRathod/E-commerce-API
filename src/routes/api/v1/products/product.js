@@ -7,7 +7,7 @@ const product = require('../../../../controller/api/v1/products/product');
 router.use('/book', require('./book-category'));
 
 // add to cart
-router.use('/add-to-cart/:productId', authenticateConsumerToken, product.addToCart);
+router.use('/add-to-cart', authenticateConsumerToken, product.addToCart);
 
 module.exports = router;
 

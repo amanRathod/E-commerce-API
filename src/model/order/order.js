@@ -29,7 +29,7 @@ const OrderSchema = new Schema({
   },
   payment_method: {
     type: String,
-    enum: ['cash', 'card'],
+    enum: ['cash', 'card', 'nft', 'bitcoin', 'paypal', 'phonepay'],
     default: 'cash',
   },
   payment_status: {

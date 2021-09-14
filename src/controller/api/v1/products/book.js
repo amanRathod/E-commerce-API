@@ -26,6 +26,14 @@ exports.createProduct = async(req, res, next) => {
       });
     }
 
+    // supplier is varified by admin
+    if (!req.user.isVarified) {
+      return res.status(422).json({
+        success: false,
+        message: 'You are not verified',
+      });
+    }
+
     productImage.single('file');
 
     const book = await Book.create({...req.body});
@@ -47,6 +55,7 @@ exports.updateProduct = async(req, res, next) => {
   try {
 
     const productId = req.params.productId;
+    console.log(productId);
     const products = await Product.findByIdAndUpdate({_id: productId}, ...req.body);
     if (!products) {
       return res.status(404).json({
@@ -54,13 +63,14 @@ exports.updateProduct = async(req, res, next) => {
         message: 'Product not found',
       });
     }
-    console.log(products);
     await Book.findByIdAndUpdate({_id: products.product}, ...req.body);
     // const data = await Product.findOne({}).populate('Book');
 
     return res.status(200).json({
       success: true,
       message: 'Product updated successfully',
+      Product,
+      Book,
     });
 
   } catch (err) {

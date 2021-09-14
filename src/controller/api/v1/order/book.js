@@ -1,12 +1,13 @@
 /* eslint-disable max-len */
-const { validatorResult } = require('express-validator');
+const { validationResult } = require('express-validator');
 const Order = require('../../../../model/order/order');
 const User = require('../../../../model/user/consumer');
 const Products = require('../../../../model/product/product');
+const Address = require('../../../../model/user/address');
 
 exports.createOrder = async(req, res, next) => {
   try {
-    const error = validatorResult(req);
+    const error = validationResult(req);
     if (!error) {
       return res.status(422).json({
         success: false,
@@ -14,37 +15,44 @@ exports.createOrder = async(req, res, next) => {
       });
     }
 
-    const user = await User.findById(req.user._id);
-    if (!user.isVarified) {
+    const { quantity, product_id } = req.body;
+    const consumer = req.user;
+
+    const product = await Products.findById(product_id);
+    if (!product) {
       return res.status(422).json({
         success: false,
-        message: 'You are not verified',
+        message: 'Product not found',
       });
     }
 
-    const { quantity, basePrice, email, product_id } = req.body;
-    // next day
+    // next day delivery
     let tomorrow = new Date();
     const delivery_date = tomorrow.setDate(tomorrow.getDate() + 1);
 
-    // 10 am
+    // next day 10am delivery time
     const delivery_time = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 10, 0, 0, 0) - tomorrow;
 
+    // total price to be paid by consumer on delivery date
     const delivery_fee = 50;
-    const totalPrice = basePrice * quantity * 0.18 + delivery_fee;
+    const totalPrice = product.price * quantity * 0.18 + delivery_fee;
 
+    // delivery-address of consumer
+    const delivery_address = await Address.findOne({user: consumer._id});
+    console.log(delivery_address);
     const order = new Order({
       totalPrice,
       product_id,
       delivery_date,
       delivery_time,
       delivery_fee,
+      delivery_address: delivery_address.address,
       ...req.body,
     });
     await order.save();
 
     // add order-id into order-history of consumer
-    await User.findOneAndUpdate({ email }, { $push: {orders: order._id} });
+    await User.findOneAndUpdate({ email: consumer.email }, { $push: {orders: order._id} });
 
     // update product quantity
     await Products.findByIdAndUpdate({_id: product_id}, { $inc: {quantity: -quantity} });
@@ -52,6 +60,7 @@ exports.createOrder = async(req, res, next) => {
     return res.status(201).json({
       success: true,
       data: order,
+      delivery_address,
     });
 
   } catch (err) {
