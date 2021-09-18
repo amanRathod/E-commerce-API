@@ -65,7 +65,6 @@ exports.getCart = async(req, res, next) => {
 
 exports.getAllProducts = async(req, res, next) => {
   try {
-    console.log('helloo');
     const product = await Product.find({}).populate('productId').exec();
     return res.status(200).json({
       type: 'success',

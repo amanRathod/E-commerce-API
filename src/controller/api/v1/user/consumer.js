@@ -38,7 +38,7 @@ exports.login = async(req, res, next) => {
       userId: user.id,
     });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
@@ -74,7 +74,6 @@ exports.register = async(req, res, next) => {
       message: 'Register Successfully',
     });
   } catch (err) {
-    console.log(err);
     return res.status(500).json({
       success: false,
       message: 'Server is Invalid',
