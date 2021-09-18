@@ -16,5 +16,9 @@ router.delete('/remove-from-cart', [
   body('productId').not().isEmpty(),
 ], authenticateConsumerToken, product.removeFromCart);
 
+router.get('/getcart', authenticateConsumerToken, product.getCart);
+
+router.get('/get-all-products', authenticateConsumerToken, product.getAllProducts);
+
 module.exports = router;
 

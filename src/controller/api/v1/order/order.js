@@ -1,18 +1,10 @@
-const { validatorResult } = require('express-validator');
 const Order = require('../../../../model/order/order');
 
 exports.getOneOrder = async(req, res, next) => {
   try {
 
-    const error = validatorResult(req);
-    if (!error) {
-      return res.status(422).json({
-        success: false,
-        message: error.array()[0].msg,
-      });
-    }
     const orderId = req.params.orderId;
-    const order = await Order.findById(orderId);
+    const order = await Order.findById({ _id: orderId});
     if (!order) {
       return res.status(404).json({
         success: false,

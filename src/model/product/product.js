@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-// const Book = require('../../model/product/books');
 
 const productSchema = new Schema({
   name: {
@@ -9,7 +8,6 @@ const productSchema = new Schema({
   },
   image: {
     type: String,
-    required: true,
   },
   price: {
     type: Number,
@@ -34,13 +32,18 @@ const productSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  product: [{
+  productId: {
     type: Schema.Types.ObjectId,
     ref: 'Book',
-  }],
-  supplier: {
+  },
+  owner: {
     type: String,
+    enum: ['Admin', 'Supplier'],
     required: true,
+  },
+  ownerId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
   },
 }, {
   timestamps: true,
