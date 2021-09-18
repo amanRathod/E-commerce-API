@@ -11,7 +11,8 @@
   - All user type can update their personal data and reset password 
   - Supplier can register and get verified by admin 
   - Admin/ Supplier can add products 
-  - User can browse products, can checkout, items in the cart and order a product
+  - User can browse products, can checkout, items in the cart
+  - User can also order a product, accept or cancel a product
   - Supplier can view order placed
   - Admin can delete any illegal product (against company policy)
 
