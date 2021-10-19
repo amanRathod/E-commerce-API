@@ -4,7 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const Product = require('../../../../model/product/product');
 const Book = require('../../../../model/product/books');
-
+const { uploadFile } = require('../../../../../s3');
 
 // multer config for image upload
 const storage = multer.diskStorage({
@@ -34,8 +34,6 @@ exports.createProductSupplier = async(req, res, next) => {
       });
     }
 
-    productImage.single('file');
-
     const book = await Book.create({...req.body});
 
     req.body.productId = book._id;
@@ -45,8 +43,8 @@ exports.createProductSupplier = async(req, res, next) => {
 
     // if no image is uploaded, then add product without image
     if (req.file) {
-      const photoURL = req.protocol + '://' + req.get('host') + '/' + req.file.path;
-      product = await Product.create({ image: photoURL, ...req.body });
+      const photoURL = await uploadFile(req.file);
+      product = await Product.create({ image: photoURL.Location, ...req.body });
     } else {
       product = await Product.create({...req.body });
     }
@@ -84,8 +82,8 @@ exports.createProductAdmin = async(req, res, next) => {
 
     // if no image is uploaded, then add product without image
     if (req.file) {
-      const photoURL = req.protocol + '://' + req.get('host') + '/' + req.file.path;
-      product = await Product.create({image: photoURL, ...req.body });
+      const photoURL = await uploadFile(req.file);
+      product = await Product.create({image: photoURL.Location, ...req.body });
     } else {
       product = await Product.create({...req.body });
     }
