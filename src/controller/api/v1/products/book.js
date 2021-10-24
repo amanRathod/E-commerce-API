@@ -59,7 +59,7 @@ exports.createProductAdmin = async(req, res, next) => {
       });
     }
 
-
+    // create book model
     const book = await Book.create({...req.body});
 
     req.body.productId = book._id;
