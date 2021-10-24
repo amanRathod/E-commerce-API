@@ -1,20 +1,8 @@
 /* eslint-disable max-len */
 const { validationResult } = require('express-validator');
-const multer = require('multer');
-const path = require('path');
 const Product = require('../../../../model/product/product');
 const Book = require('../../../../model/product/books');
 const { uploadFile } = require('../../../../../s3');
-
-// multer config for image upload
-const storage = multer.diskStorage({
-  destination: './public/productImage/',
-  filename: function(req, file, cb){
-    cb(null, 'IMAGE-' + Date.now() + path.extname(file.originalname));
-  },
-});
-
-const productImage = multer({ storage: storage, limits: {fileSize: 100000 }}); // limit 10MB
 
 exports.createProductSupplier = async(req, res, next) => {
   try {
@@ -71,7 +59,6 @@ exports.createProductAdmin = async(req, res, next) => {
       });
     }
 
-    productImage.single('file');
 
     const book = await Book.create({...req.body});
 
