@@ -49,8 +49,6 @@ exports.removeFromCart = async(req, res, next) => {
   }
 };
 
-<<<<<<< HEAD
-=======
 exports.getCart = async(req, res, next) => {
   try {
     const consumer = await Consumer.findById(req.user._id);
@@ -77,4 +75,3 @@ exports.getAllProducts = async(req, res, next) => {
     next(err);
   }
 };
->>>>>>> e5d88a31e72f627f457e5674454730a6236524f5

@@ -15,13 +15,10 @@ router.post('/add-to-cart', [
 router.delete('/remove-from-cart', [
   body('productId').not().isEmpty(),
 ], authenticateConsumerToken, product.removeFromCart);
-<<<<<<< HEAD
-=======
 
 router.get('/getcart', authenticateConsumerToken, product.getCart);
 
 router.get('/get-all-products', authenticateConsumerToken, product.getAllProducts);
->>>>>>> e5d88a31e72f627f457e5674454730a6236524f5
 
 module.exports = router;
 

@@ -5,7 +5,7 @@ const path = require('path');
 const multer = require('multer');
 const { body } = require('express-validator');
 const authenticateSupplierToken = require('../../../../middleware/valid-supplier');
-// const authenticateAdminToken = require('../../../../middleware/valid-admin');
+const authenticateAdminToken = require('../../../../middleware/valid-admin');
 const book = require('../../../../controller/api/v1/products/book');
 
 const storage = multer.diskStorage({
@@ -22,9 +22,6 @@ router.post('/supplier', [
   body('image').not().isEmpty().withMessage('Product image is required'),
   body('category').not().isEmpty().withMessage('Product category is required'),
   body('stock').not().isEmpty().withMessage('Product stock is required'),
-<<<<<<< HEAD
-], [ authenticateSupplierToken], book.createProduct);
-=======
 ], [ authenticateSupplierToken], upload.single('file'), book.createProductSupplier);
 
 router.post('/admin', [
@@ -36,7 +33,6 @@ router.post('/admin', [
 ], [ authenticateAdminToken], upload.single('file'), book.createProductAdmin);
 
 router.put('/supplier/:productId', authenticateSupplierToken, book.updateProductSupplier);
->>>>>>> e5d88a31e72f627f457e5674454730a6236524f5
 
 router.get('/:productId', authenticateSupplierToken, book.getProduct);
 
