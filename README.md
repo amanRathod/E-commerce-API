@@ -28,6 +28,8 @@
 - jsonwebtoken
 - nodemailer
 - multer
+- graphql
+- apollo-server-express
 
 **Database**: MongoDB
 
