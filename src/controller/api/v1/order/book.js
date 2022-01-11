@@ -5,6 +5,7 @@ const User = require('../../../../model/user/consumer');
 const Products = require('../../../../model/product/product');
 const Address = require('../../../../model/user/address');
 
+
 exports.createOrder = async(req, res, next) => {
   try {
     const error = validationResult(req);
@@ -71,6 +72,8 @@ exports.createOrder = async(req, res, next) => {
 exports.successOrder = async(req, res, next) => {
   try {
     const orderId = req.params.orderId;
+
+    // update order status
     const order = await Order.findByIdAndUpdate({_id: orderId}, { $set: { delivery_status: 'accepted', payment_status: 'paid', ...req.body } });
 
     if (!order) {
@@ -101,6 +104,7 @@ exports.cancelOrder = async(req, res, next) => {
       });
     }
 
+    // increase product quantity
     await Products.findByIdAndUpdate({_id: order.product_id}, { $inc: {quantity: order.quantity} });
 
     return res.status(200).json({
