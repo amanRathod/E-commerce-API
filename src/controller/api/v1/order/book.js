@@ -40,7 +40,7 @@ exports.createOrder = async(req, res, next) => {
 
     // delivery-address of consumer
     const delivery_address = await Address.findOne({user: consumer._id});
-    console.log(delivery_address);
+
     const order = new Order({
       totalPrice,
       product_id,

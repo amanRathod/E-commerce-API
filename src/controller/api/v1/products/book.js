@@ -1,22 +1,10 @@
 /* eslint-disable max-len */
 const { validationResult } = require('express-validator');
-const multer = require('multer');
-const path = require('path');
 const Product = require('../../../../model/product/product');
 const Book = require('../../../../model/product/books');
+const { uploadFile } = require('../../../../../s3');
 
-
-// multer config for image upload
-const storage = multer.diskStorage({
-  destination: './public/productImage/',
-  filename: function(req, file, cb){
-    cb(null, 'IMAGE-' + Date.now() + path.extname(file.originalname));
-  },
-});
-
-const productImage = multer({ storage: storage, limits: {fileSize: 100000 }}); // limit 10MB
-
-exports.createProduct = async(req, res, next) => {
+exports.createProductSupplier = async(req, res, next) => {
   try {
     const error = validationResult(req);
     if (!error) {
@@ -34,15 +22,101 @@ exports.createProduct = async(req, res, next) => {
       });
     }
 
-    productImage.single('file');
-
     const book = await Book.create({...req.body});
-    const photoURL = req.protocol + '://' + req.get('host') + '/' + req.file.path;
-    await Product.create({product: book._id, supplier: req.user.email, image: photoURL, ...req.body });
+
+    req.body.productId = book._id;
+    req.body.owner = 'Supplier';
+    req.body.ownerId = req.user._id;
+    let product;
+
+    // if no image is uploaded, then add product without image
+    if (req.file) {
+      const photoURL = await uploadFile(req.file);
+      product = await Product.create({ image: photoURL.Location, ...req.body });
+    } else {
+      product = await Product.create({...req.body });
+    }
 
     return res.status(200).json({
       success: true,
       message: 'Product created successfully',
+      book,
+      product,
+    });
+
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.createProductAdmin = async(req, res, next) => {
+  try {
+    const error = validationResult(req);
+    if (!error) {
+      return res.status(422).json({
+        success: false,
+        error: error.array()[0].msg,
+      });
+    }
+
+    // create book model
+    const book = await Book.create({...req.body});
+
+    req.body.productId = book._id;
+    req.body.owner = 'Admin';
+    req.body.ownerId = req.user._id;
+    let product;
+
+    // if no image is uploaded, then add product without image
+    if (req.file) {
+      const photoURL = await uploadFile(req.file);
+      product = await Product.create({image: photoURL.Location, ...req.body });
+    } else {
+      product = await Product.create({...req.body });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Product created successfully',
+      book,
+      product,
+    });
+
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+exports.updateProductSupplier = async(req, res, next) => {
+  try {
+
+    const productId = req.params.productId;
+
+    // validate product, if it belong to current supplier or not
+    const product = await Product.findById(productId);
+    if (String(req.user._id) !== String(product.ownerId)) {
+      return res.status(404).json({
+        type: 'error',
+        message: "this product doesn't belong to you",
+      });
+    }
+
+    const products = await Product.findByIdAndUpdate({_id: productId}, req.body);
+    if (!products) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found',
+      });
+    }
+
+    const book = await Book.findByIdAndUpdate({_id: products.productId}, req.body);
+    // const data = await Product.findOne({}).populate('Book');
+
+    return res.status(200).json({
+      success: true,
+      message: 'Product updated successfully',
+      products,
       book,
     });
 
@@ -51,26 +125,25 @@ exports.createProduct = async(req, res, next) => {
   }
 };
 
-exports.updateProduct = async(req, res, next) => {
-  try {
 
+exports.getProduct = async(req, res, next) => {
+  try {
     const productId = req.params.productId;
-    console.log(productId);
-    const products = await Product.findByIdAndUpdate({_id: productId}, ...req.body);
-    if (!products) {
+
+    // populate book and product model with related data
+    const data = await Product.findById(productId).populate('productId').exec();
+
+    if (!data) {
       return res.status(404).json({
         success: false,
         message: 'Product not found',
       });
     }
-    await Book.findByIdAndUpdate({_id: products.product}, ...req.body);
-    // const data = await Product.findOne({}).populate('Book');
 
     return res.status(200).json({
       success: true,
-      message: 'Product updated successfully',
-      Product,
-      Book,
+      message: 'Product found successfully',
+      data,
     });
 
   } catch (err) {

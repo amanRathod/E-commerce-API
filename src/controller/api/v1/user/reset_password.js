@@ -2,22 +2,22 @@
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
-// const nodemailerSendgrid = require('nodemailer-sendgrid');
+const nodemailerSendgrid = require('nodemailer-sendgrid');
 const { validationResult } = require('express-validator');
 const User = require('../../../../model/user/consumer');
 
-// const transport = nodemailer.createTransport(nodemailerSendgrid({
-//   apiKey: process.env.SENDGRID_API_KEY,
-// }));
+const transport = nodemailer.createTransport(nodemailerSendgrid({
+  apiKey: process.env.SENDGRID_API_KEY,
+}));
 
-const transport = nodemailer.createTransport({
-  host: 'smtp.mailtrap.io',
-  port: 2525,
-  auth: {
-    user: process.env.MAIL_TRAP_USER,
-    pass: process.env.MAIL_TRAP_PASSWORD,
-  },
-});
+// const transport = nodemailer.createTransport({
+//   host: 'smtp.mailtrap.io',
+//   port: 2525,
+//   auth: {
+//     user: process.env.MAIL_TRAP_USER,
+//     pass: process.env.MAIL_TRAP_PASSWORD,
+//   },
+// });
 
 exports.forgotPassword = async(req, res, next) => {
   try {

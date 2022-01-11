@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 const { validationResult } = require('express-validator');
 const Consumer = require('../../../../model/user/consumer');
+const Product = require('../../../../model/product/product');
 
 exports.addToCart = async(req, res, next) => {
   try {
@@ -48,3 +49,32 @@ exports.removeFromCart = async(req, res, next) => {
   }
 };
 
+<<<<<<< HEAD
+=======
+exports.getCart = async(req, res, next) => {
+  try {
+    const consumer = await Consumer.findById(req.user._id);
+    const cartData = await Product.find({ _id: { $in: consumer.cart } }).populate('productId').exec();
+    return res.status(200).json({
+      type: 'success',
+      cart: cartData,
+    });
+
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getAllProducts = async(req, res, next) => {
+  try {
+    const product = await Product.find({}).populate('productId').exec();
+    return res.status(200).json({
+      type: 'success',
+      products: product,
+    });
+
+  } catch (err) {
+    next(err);
+  }
+};
+>>>>>>> e5d88a31e72f627f457e5674454730a6236524f5

@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/public', express.static('public'));
 
-const port = process.env.PORT;
+const port = process.env.PORT || 5000;
 
 app.use('/', require('./routes'));
 

@@ -1,5 +1,21 @@
 # E-commerce Backened App
 
+### It contain following request
+
+- It contain 3 user type
+  - consumer 
+  - admin 
+  - supplier
+
+- **Features**
+  - All user type can update their personal data and reset password 
+  - Supplier can register and get verified by admin 
+  - Admin/ Supplier can add products 
+  - User can browse products, can checkout, items in the cart
+  - User can also order a product, accept or cancel a product
+  - Supplier can view order placed
+  - Admin can delete any illegal product (against company policy)
+
 ### NPM libraries used
 - dotenv
 - cors
@@ -12,3 +28,9 @@
 - jsonwebtoken
 - nodemailer
 - multer
+
+**Database**: MongoDB
+
+# [**API Doc**](https://documenter.getpostman.com/view/15820246/U16nLjJB)
+
+# [Live link](https://fast-island-03332.herokuapp.com)
